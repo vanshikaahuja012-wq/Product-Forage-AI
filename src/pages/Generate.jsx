@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 function Generate() {
   return (
@@ -30,10 +31,10 @@ function Generate() {
           />
 
           <textarea
-            placeholder="Product Features"
             rows="4"
+            placeholder="Product Features"
             className="w-full border rounded-lg p-3"
-          ></textarea>
+          />
 
           <select className="w-full border rounded-lg p-3">
             <option>Premium</option>
@@ -46,6 +47,8 @@ function Generate() {
           </button>
         </div>
       </div>
+
+      <Footer />
     </>
   );
 }
