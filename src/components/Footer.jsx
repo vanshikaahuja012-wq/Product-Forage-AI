@@ -1,7 +1,7 @@
 function Footer() {
   return (
-    <footer style={{ textAlign: "center", padding: "20px", marginTop: "30px" }}>
-      <p>© 2026 AI Product Description Generator</p>
+    <footer className="bg-gray-900 text-white text-center py-6 mt-10">
+      <p>© 2026 AI Product Description Generator. All Rights Reserved.</p>
     </footer>
   );
 }

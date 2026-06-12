@@ -1,12 +1,25 @@
+import { Link } from "react-router-dom";
+
 function Navbar() {
   return (
-    <nav style={{ padding: "15px", borderBottom: "1px solid #ccc" }}>
-      <h2>AI Product Description Generator</h2>
-      <ul style={{ display: "flex", gap: "20px", listStyle: "none" }}>
-        <li>Home</li>
-        <li>Generate</li>
-        <li>About</li>
-        <li>Contact</li>
+    <nav className="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
+      <h1 className="text-2xl font-bold">
+        AI Product Description Generator
+      </h1>
+
+      <ul className="flex gap-6">
+        <li>
+          <Link to="/" className="hover:text-gray-200">Home</Link>
+        </li>
+        <li>
+          <Link to="/generate" className="hover:text-gray-200">Generate</Link>
+        </li>
+        <li>
+          <Link to="/about" className="hover:text-gray-200">About</Link>
+        </li>
+        <li>
+          <Link to="/contact" className="hover:text-gray-200">Contact</Link>
+        </li>
       </ul>
     </nav>
   );

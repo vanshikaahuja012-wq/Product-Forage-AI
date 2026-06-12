@@ -1,10 +1,18 @@
 function Hero() {
   return (
-    <div style={{ textAlign: "center", padding: "40px" }}>
-      <h1>Generate AI-Powered Product Descriptions</h1>
-      <p>Create engaging e-commerce descriptions in seconds.</p>
-      <button>Get Started</button>
-    </div>
+    <section className="bg-blue-100 py-20 text-center">
+      <h2 className="text-5xl font-bold text-blue-700 mb-4">
+        Generate AI-Powered Product Descriptions
+      </h2>
+
+      <p className="text-lg text-gray-700 mb-8">
+        Create professional e-commerce listings in seconds.
+      </p>
+
+      <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+        Get Started
+      </button>
+    </section>
   );
 }
 
