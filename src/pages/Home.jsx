@@ -9,7 +9,7 @@ function Home() {
       <Navbar />
       <Hero />
 
-      <section className="flex justify-center gap-6 py-10 flex-wrap">
+      <section className="flex flex-col md:flex-row flex-wrap justify-center gap-4 md:gap-6 py-10 px-4">
         <Card
           title="Premium Tone"
           description="Generate elegant and high-quality product descriptions."
