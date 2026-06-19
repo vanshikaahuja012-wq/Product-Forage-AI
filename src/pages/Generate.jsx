@@ -1,7 +1,34 @@
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
+import Loader from "../components/ui/Loader";
+import Toast from "../components/ui/Toast";
+import Modal from "../components/ui/Modal";
+
 function Generate() {
+  const [productName, setProductName] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [weight, setWeight] = useState("");
+  const [features, setFeatures] = useState("");
+  const [tone, setTone] = useState("Premium");
+
+  const [loading, setLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleGenerate = () => {
+    setLoading(true);
+
+    // Simulate AI generation
+    setTimeout(() => {
+      setLoading(false);
+      setShowToast(true);
+    }, 2000);
+  };
+
   return (
     <>
       <Navbar />
@@ -12,39 +39,91 @@ function Generate() {
         </h1>
 
         <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
-          <input
-            type="text"
-            placeholder="Product Name"
-            className="w-full border rounded-lg p-3"
+          <Input
+            label="Product Name"
+            placeholder="Enter product name"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
           />
 
-          <input
-            type="text"
-            placeholder="Key Ingredients"
-            className="w-full border rounded-lg p-3"
+          <Input
+            label="Key Ingredients"
+            placeholder="Enter key ingredients"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
           />
 
-          <input
-            type="text"
-            placeholder="Weight"
-            className="w-full border rounded-lg p-3"
+          <Input
+            label="Weight"
+            placeholder="Enter product weight"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
           />
 
-          <textarea
-            rows="4"
-            placeholder="Product Features"
-            className="w-full border rounded-lg p-3"
+          <div>
+            <label className="block mb-1 font-medium">
+              Product Features
+            </label>
+            <textarea
+              rows="4"
+              placeholder="Enter product features"
+              value={features}
+              onChange={(e) => setFeatures(e.target.value)}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">
+              Select Tone
+            </label>
+            <select
+              value={tone}
+              onChange={(e) => setTone(e.target.value)}
+              className="w-full border rounded px-3 py-2"
+            >
+              <option>Premium</option>
+              <option>Traditional</option>
+              <option>Health-Focused</option>
+            </select>
+          </div>
+
+          <div className="flex gap-4">
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleGenerate}
+            >
+              Generate Description
+            </Button>
+
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => setIsOpen(true)}
+            >
+              Show Help
+            </Button>
+          </div>
+
+          {loading && <Loader />}
+
+          <Modal
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            title="How to Use"
+          >
+            <p>
+              Fill in the product details, choose a tone,
+              and click <strong>Generate Description</strong>.
+            </p>
+          </Modal>
+
+          <Toast
+            message="Description generated successfully!"
+            show={showToast}
+            onClose={() => setShowToast(false)}
           />
-
-          <select className="w-full border rounded-lg p-3">
-            <option>Premium</option>
-            <option>Traditional</option>
-            <option>Health-Focused</option>
-          </select>
-
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-            Generate Description
-          </button>
         </div>
       </div>
 
