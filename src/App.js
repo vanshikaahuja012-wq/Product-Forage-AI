@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Generate from "./pages/Generate";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import ComponentDemo from "./pages/ComponentDemo";
 
 function App() {
   return (
@@ -12,9 +13,13 @@ function App() {
         <Route path="/generate" element={<Generate />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/demo" element={<ComponentDemo />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
+
+
+
