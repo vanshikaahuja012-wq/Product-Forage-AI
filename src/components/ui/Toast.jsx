@@ -1,3 +1,11 @@
+/**
+ * Toast Component
+ *
+ * @param {Object} props
+ * @param {string} props.message - Message displayed in the toast notification.
+ * @param {boolean} props.show - Controls whether the toast is visible.
+ * @param {Function} props.onClose - Function called to hide the toast.
+ */
 import { useEffect } from "react";
 
 function Toast({ message, show, onClose }) {

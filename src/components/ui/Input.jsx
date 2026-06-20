@@ -1,4 +1,14 @@
-
+/**
+ * Input Component
+ *
+ * @param {Object} props
+ * @param {string} props.label - Label displayed above the input.
+ * @param {string} props.placeholder - Placeholder text for the input.
+ * @param {string} props.type - HTML input type (default: "text").
+ * @param {string} props.value - Current value of the input.
+ * @param {Function} props.onChange - Function called when the input value changes.
+ * @param {string} props.error - Optional error message displayed below the input.
+ */
 function Input({
   label,
   placeholder,

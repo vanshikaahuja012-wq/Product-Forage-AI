@@ -1,3 +1,11 @@
+/**
+ * ThemeToggle Component
+ *
+ * Toggles between light mode and dark mode and stores the user's
+ * preference in localStorage.
+ *
+ * @returns {JSX.Element}
+ */
 import { useEffect, useState } from "react";
 
 function ThemeToggle() {

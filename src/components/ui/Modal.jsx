@@ -1,3 +1,12 @@
+/**
+ * Modal Component
+ *
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Controls whether the modal is visible.
+ * @param {Function} props.onClose - Function called to close the modal.
+ * @param {string} props.title - Title displayed at the top of the modal.
+ * @param {React.ReactNode} props.children - Content displayed inside the modal.
+ */
 import { useEffect } from "react";
 
 function Modal({ isOpen, onClose, title, children }) {

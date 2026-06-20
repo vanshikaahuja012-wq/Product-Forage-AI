@@ -1,3 +1,10 @@
+/**
+ * Loader Component
+ *
+ * Displays a loading spinner while content or data is being processed.
+ *
+ * @returns {JSX.Element}
+ */
 function Loader() {
   return (
     <div className="flex justify-center items-center">

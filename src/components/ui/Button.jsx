@@ -1,3 +1,13 @@
+/**
+ * Button Component
+ *
+ * @param {Object} props
+ * @param {"primary"|"secondary"|"outline"} props.variant - Button style variant.
+ * @param {"sm"|"md"|"lg"} props.size - Button size.
+ * @param {boolean} props.disabled - Disables the button when true.
+ * @param {Function} props.onClick - Function called when the button is clicked.
+ * @param {React.ReactNode} props.children - Content displayed inside the button.
+ */
 function Button({
   variant = "primary",
   size = "md",
