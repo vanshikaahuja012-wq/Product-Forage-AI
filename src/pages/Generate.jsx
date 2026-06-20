@@ -33,12 +33,12 @@ function Generate() {
     <>
       <Navbar />
 
-      <div className="max-w-3xl mx-auto p-8">
+      <div className="max-w-3xl mx-auto p-8 min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white">
         <h1 className="text-4xl font-bold text-center mb-6">
           Product Description Generator
         </h1>
 
-        <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
+       <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 space-y-4">
           <Input
             label="Product Name"
             placeholder="Enter product name"

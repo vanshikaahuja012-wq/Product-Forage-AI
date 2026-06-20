@@ -18,7 +18,8 @@ function Button({
   const variantClasses = {
     primary: "bg-blue-600 text-white hover:bg-blue-700",
     secondary: "bg-gray-600 text-white hover:bg-gray-700",
-    outline: "border border-blue-600 text-blue-600 hover:bg-blue-50",
+    outline:
+  "border border-blue-600 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-400 dark:hover:bg-gray-800",
   };
 
   const sizeClasses = {
