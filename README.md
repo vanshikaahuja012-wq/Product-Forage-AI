@@ -1,21 +1,44 @@
 # AI Product Description Generator
 
-## Description
-An AI-powered web application that generates professional e-commerce product descriptions for food products based on user inputs such as product name, ingredients, weight, and features.
-
 ## Tech Stack
 - React.js
-- JavaScript
-- CSS
-- Gemini API
 - Node.js
+- Express.js
+- MongoDB Atlas
+- Mongoose
+
+## Database
+MongoDB Atlas was used as the database, and Mongoose was used as the ODM.
 
 ## Features
-- Product Details Form
-- Tone Selection
-- AI Description Generation
-- Regenerate Output
-- Copy to Clipboard
+- Create Product
+- Read Products
+- Update Product
+- Delete Product
+- Search Product
+- AI Product Description Generation
 
 ## Setup
-Coming soon.
+
+### Backend
+
+npm install
+
+Create a `.env` file:
+
+MONGO_URI=your_connection_string
+PORT=5000
+
+Run:
+
+npm start
+
+### Frontend
+
+npm install
+
+npm start
+
+## Schema Diagram
+
+(Add your schema diagram image or PDF here.)
