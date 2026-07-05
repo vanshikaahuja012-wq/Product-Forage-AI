@@ -1,44 +1,141 @@
-function Card({ task, editTask, deleteTask }) {
-  if (!task) return null;
+function Card({
+  task,
+  editTask,
+  deleteTask
+}) {
+
+
+  // Prevent crash if data is missing
+  if (!task) {
+    return null;
+  }
+
 
   return (
-    <div className="bg-white shadow-md rounded-xl p-5 mb-4">
 
-      <h3 className="text-xl font-bold text-blue-600">
-        {task?.productName || "No Product Name"}
-      </h3>
+    <div
+      className="
+      bg-white
+      rounded-2xl
+      shadow-md
+      border
+      p-6
+      mb-5
+      hover:shadow-xl
+      transition
+      "
+    >
 
-      <p className="mt-2 text-gray-700">
-        {task?.description || "No description available"}
-      </p>
 
-      <div className="mt-3 text-sm text-gray-600">
-        <p><strong>Ingredients:</strong> {task?.ingredients}</p>
-        <p><strong>Weight:</strong> {task?.weight}</p>
-        <p><strong>Features:</strong> {task?.features}</p>
-        <p><strong>Tone:</strong> {task?.tone}</p>
+      <div className="
+      flex
+      justify-between
+      items-start
+      ">
+
+
+        <div>
+
+          <h3 className="
+          text-xl
+          font-bold
+          text-gray-800
+          ">
+
+            📦 {task.productName || "Unknown Product"}
+
+          </h3>
+
+
+          <p className="
+          text-sm
+          text-gray-500
+          mt-2
+          ">
+
+            Tone: {task.tone || "Premium"}
+
+          </p>
+
+
+        </div>
+
+
+
+        <div className="
+        flex
+        gap-3
+        ">
+
+
+          <button
+
+            onClick={() => editTask(task)}
+
+            className="
+            bg-indigo-100
+            text-indigo-600
+            px-3
+            py-2
+            rounded-lg
+            "
+
+          >
+
+            Edit
+
+          </button>
+
+
+
+          <button
+
+            onClick={() => deleteTask(task._id)}
+
+            className="
+            bg-red-100
+            text-red-600
+            px-3
+            py-2
+            rounded-lg
+            "
+
+          >
+
+            Delete
+
+          </button>
+
+
+        </div>
+
+
       </div>
 
-      <div className="flex gap-2 mt-4">
 
-        <button
-          onClick={() => editTask(task)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Edit
-        </button>
 
-        <button
-          onClick={() => deleteTask(task._id)}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-        >
-          Delete
-        </button>
+
+      <div className="
+      mt-5
+      bg-gray-50
+      rounded-xl
+      p-4
+      text-gray-700
+      ">
+
+
+        {task.description || "No description available"}
+
 
       </div>
+
+
 
     </div>
+
   );
+
 }
+
 
 export default Card;
