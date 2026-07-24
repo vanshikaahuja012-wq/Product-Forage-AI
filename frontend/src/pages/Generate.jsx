@@ -1,996 +1,1368 @@
 import { useState, useEffect } from "react";
-
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
-import Input from "../components/ui/Input";
-import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader";
-
-import Card from "../components/Card";
 import Toast from "../components/ui/Toast";
 import Modal from "../components/ui/Modal";
-
-
-import { jsPDF } from "jspdf";
+import jsPDF from "jspdf";
 
 
 function Generate() {
 
 
-const [productName,setProductName]=useState("");
-const [ingredients,setIngredients]=useState("");
-const [weight,setWeight]=useState("");
-const [features,setFeatures]=useState("");
+  const [productName,setProductName] = useState("");
+  const [ingredients,setIngredients] = useState("");
+  const [weight,setWeight] = useState("");
+  const [features,setFeatures] = useState("");
+  const [tone,setTone] = useState("Premium");
 
-const [tone,setTone]=useState("Premium");
 
+  const [generatedDescription,setGeneratedDescription] = useState("");
+  const [tasks,setTasks] = useState([]);
 
-const [generatedDescription,setGeneratedDescription]=useState("");
 
-const [tasks,setTasks]=useState([]);
+  const [loading,setLoading] = useState(false);
 
-const [loading,setLoading]=useState(false);
 
-const [search,setSearch]=useState("");
+  const [showToast,setShowToast] = useState(false);
+  const [toastMessage,setToastMessage] = useState("");
 
-const [editingId,setEditingId]=useState(null);
 
-const [showToast,setShowToast]=useState(false);
+  const [editingId,setEditingId] = useState(null);
 
-const [isOpen,setIsOpen]=useState(false);
 
+  const [search,setSearch] = useState("");
 
+  const [isOpen,setIsOpen] = useState(false);
 
-// fetch products
 
-useEffect(()=>{
 
-fetchTasks();
+  useEffect(()=>{
 
-},[]);
+    fetchTasks();
 
+  },[]);
 
 
-const fetchTasks=async()=>{
 
-try{
 
-const res=await fetch(
-"http://localhost:5000/api/tasks"
-);
+  const fetchTasks = async()=>{
 
-const data=await res.json();
+    try{
 
-setTasks(
-Array.isArray(data)
-?
-data
-:
-[]
-);
+      const res = await fetch(
+        "http://localhost:5000/api/tasks"
+      );
 
 
-}catch(error){
+      const data = await res.json();
 
-console.log(error);
 
-}
+      setTasks(
+        Array.isArray(data)
+        ? data
+        : []
+      );
 
-};
 
+    }
+    catch(error){
 
+      console.log(error);
 
+    }
 
-// Search
+  };
 
-const searchProducts=async(keyword)=>{
 
 
-setSearch(keyword);
 
 
-if(keyword.trim()===""){
+  const searchProducts = async(value)=>{
 
-fetchTasks();
 
-return;
+    setSearch(value);
 
-}
 
+    if(value.trim()===""){
 
-try{
+      fetchTasks();
+      return;
 
-const res=await fetch(
-`http://localhost:5000/api/tasks/search/${keyword}`
-);
+    }
 
 
-const data=await res.json();
+    try{
 
 
-setTasks(data);
+      const res = await fetch(
+        `http://localhost:5000/api/tasks/search/${value}`
+      );
 
 
+      const data = await res.json();
 
-}catch(error){
 
-console.log(error);
+      setTasks(data);
 
-}
 
+    }
+    catch(error){
 
+      console.log(error);
 
-};
+    }
 
+  };
 
 
-// Clear
 
-const clearForm=()=>{
 
 
-setProductName("");
-setIngredients("");
-setWeight("");
-setFeatures("");
-setTone("Premium");
-setGeneratedDescription("");
-setEditingId(null);
+  const clearForm = ()=>{
 
 
-};
+    setProductName("");
+    setIngredients("");
+    setWeight("");
+    setFeatures("");
+    setTone("Premium");
+    setGeneratedDescription("");
+    setEditingId(null);
 
 
+  };
 
 
-// Generate
 
-const handleGenerate=async()=>{
 
 
-if(
-!productName ||
-!ingredients ||
-!weight ||
-!features
-){
 
-alert("Please fill all fields");
+  const handleGenerate = async()=>{
 
-return;
 
-}
+    if(
+      !productName ||
+      !ingredients ||
+      !weight ||
+      !features
+    ){
 
+      setToastMessage(
+        "Please fill all fields"
+      );
 
-setLoading(true);
+      setShowToast(true);
 
+      return;
 
-try{
+    }
 
 
-if(editingId){
 
+    setLoading(true);
 
-await fetch(
 
-`http://localhost:5000/api/tasks/${editingId}`,
 
-{
+    try{
 
-method:"PUT",
 
-headers:{
+      if(editingId){
 
-"Content-Type":"application/json"
 
-},
+        await fetch(
+          `http://localhost:5000/api/tasks/${editingId}`,
+          {
 
+            method:"PUT",
 
-body:JSON.stringify({
+            headers:{
+              "Content-Type":"application/json"
+            },
 
-productName,
-ingredients,
-weight,
-features,
-tone,
-description:generatedDescription
 
-})
+            body:JSON.stringify({
 
+              productName,
+              ingredients,
+              weight,
+              features,
+              tone,
+              description:generatedDescription
 
-}
+            })
 
-);
+          }
+        );
 
 
-setEditingId(null);
+        setToastMessage(
+          "Product updated successfully"
+        );
 
 
+      }
+      else{
 
-}
 
-else{
+        const response = await fetch(
 
+          "http://localhost:5000/api/generate-description",
 
-const res=await fetch(
+          {
 
-"http://localhost:5000/api/generate-description",
+            method:"POST",
 
-{
+            headers:{
+              "Content-Type":"application/json"
+            },
 
-method:"POST",
 
-headers:{
+            body:JSON.stringify({
 
-"Content-Type":"application/json"
+              productName,
+              ingredients,
+              weight,
+              features,
+              tone
 
-},
+            })
 
+          }
 
-body:JSON.stringify({
+        );
 
-productName,
-ingredients,
-weight,
-features,
-tone
 
-})
 
+        const data = await response.json();
 
-}
 
-);
+        setGeneratedDescription(
+          data.description
+        );
 
 
 
-const data=await res.json();
+        setToastMessage(
+          "AI Description Generated"
+        );
 
 
-setGeneratedDescription(
-data.description
-);
+      }
 
 
-}
 
+      fetchTasks();
 
 
-fetchTasks();
+      setShowToast(true);
 
 
-setShowToast(true);
+    }
+    catch(error){
 
+      console.log(error);
 
 
-}
+      setToastMessage(
+        "Something went wrong"
+      );
 
-catch(error){
 
-console.log(error);
+      setShowToast(true);
 
-}
 
-finally{
+    }
+    finally{
 
-setLoading(false);
+      setLoading(false);
 
-}
+    }
 
 
-};
+  };
 
 
 
 
-// Delete
 
-const deleteTask=async(id)=>{
+  const editTask=(task)=>{
 
 
-await fetch(
+    setEditingId(task._id);
 
-`http://localhost:5000/api/tasks/${id}`,
+    setProductName(task.productName);
 
-{
+    setIngredients(task.ingredients);
 
-method:"DELETE"
+    setWeight(task.weight);
 
-}
+    setFeatures(task.features);
 
-);
+    setTone(task.tone);
 
+    setGeneratedDescription(task.description);
 
-fetchTasks();
 
 
-};
+    window.scrollTo({
 
+      top:0,
 
+      behavior:"smooth"
 
+    });
 
-// Edit
 
-const editTask=(task)=>{
+  };
 
 
-setEditingId(task._id);
 
-setProductName(task.productName);
 
-setIngredients(task.ingredients);
 
-setWeight(task.weight);
+  const deleteTask = async(id)=>{
 
-setFeatures(task.features);
 
-setTone(task.tone);
+    const confirmDelete = window.confirm(
+      "Delete this product?"
+    );
 
-setGeneratedDescription(task.description);
 
+    if(!confirmDelete)
+      return;
 
 
-window.scrollTo({
 
-top:0,
+    try{
 
-behavior:"smooth"
 
-});
+      await fetch(
 
+        `http://localhost:5000/api/tasks/${id}`,
 
-};
+        {
 
+          method:"DELETE"
 
+        }
 
+      );
 
-// Copy
 
-const copyText=()=>{
 
+      fetchTasks();
 
-navigator.clipboard.writeText(
-generatedDescription
-);
 
 
-setShowToast(true);
+      setToastMessage(
+        "Deleted successfully"
+      );
 
 
-};
+      setShowToast(true);
 
 
+    }
+    catch(error){
 
+      console.log(error);
 
-// PDF
+    }
 
-const downloadPDF=()=>{
 
+  };
 
-const pdf=new jsPDF();
 
 
-pdf.text(
 
-generatedDescription,
 
-10,
+  const downloadPDF=()=>{
 
-20
 
-);
+    const doc = new jsPDF();
 
 
-pdf.save(
+    doc.setFontSize(18);
 
-"product-description.pdf"
+    doc.text(
+      "AI Product Description",
+      20,
+      20
+    );
 
-);
 
 
-};
+    doc.setFontSize(12);
 
 
+    doc.text(
+      `Product: ${productName}`,
+      20,
+      40
+    );
 
 
+    const lines =
+    doc.splitTextToSize(
+      generatedDescription,
+      170
+    );
 
-return (
 
-<>
+    doc.text(
+      lines,
+      20,
+      60
+    );
 
-<Navbar/>
 
+    doc.save(
+      `${productName}-description.pdf`
+    );
 
-<div className="
-min-h-screen
-bg-slate-50
-px-6
-py-10
-">
 
+  };
+    return (
 
+    <>
 
-<div className="
-max-w-7xl
-mx-auto
-">
+      <Navbar />
 
 
-{/* HERO */}
+      <div className="
+      min-h-screen
+      bg-gradient-to-br
+      from-indigo-50
+      via-white
+      to-purple-100
+      py-10
+      ">
 
 
-<div className="
-rounded-3xl
-bg-gradient-to-r
-from-indigo-600
-via-purple-600
-to-pink-500
-text-white
-p-10
-mb-10
-shadow-xl
-">
+        <div className="
+        max-w-6xl
+        mx-auto
+        px-6
+        ">
 
 
-<h1 className="
-text-4xl
-md:text-5xl
-font-extrabold
-">
+          {/* HEADER */}
 
-✨ AI Product Description Generator
+          <div className="
+          text-center
+          mb-10
+          ">
 
-</h1>
+            <h1 className="
+            text-5xl
+            font-extrabold
+            bg-gradient-to-r
+            from-indigo-600
+            to-purple-600
+            text-transparent
+            bg-clip-text
+            ">
 
+              🤖 AI Product Description Generator
 
-<p className="
-mt-4
-text-lg
-text-indigo-100
-">
+            </h1>
 
-Generate professional SEO-friendly product
-descriptions using AI.
 
-</p>
+            <p className="
+            text-gray-600
+            mt-4
+            text-lg
+            ">
 
+              Create professional e-commerce descriptions using AI
 
-</div>
+            </p>
 
 
+          </div>
 
 
 
-{/* SEARCH */}
 
-<div className="
-bg-white
-rounded-2xl
-shadow
-p-5
-mb-8
-flex
-items-center
-gap-3
-">
 
+          {/* DASHBOARD */}
 
-<span className="text-gray-400 text-xl">
-🔍
-</span>
 
+          <div className="
+          grid
+          md:grid-cols-3
+          gap-6
+          mb-10
+          ">
 
-<input
 
-value={search}
+            <div className="
+            bg-white
+            rounded-3xl
+            shadow-xl
+            p-6
+            border
+            ">
 
-onChange={(e)=>
-searchProducts(e.target.value)
-}
+              <p className="text-gray-500">
+                📦 Total Products
+              </p>
 
-placeholder="Search products..."
 
-className="
-w-full
-outline-none
-"
+              <h2 className="
+              text-4xl
+              font-bold
+              text-indigo-600
+              mt-2
+              ">
 
-/>
+                {tasks.length}
 
+              </h2>
 
-</div>
 
+            </div>
 
 
 
+            <div className="
+            bg-white
+            rounded-3xl
+            shadow-xl
+            p-6
+            border
+            ">
 
 
-{/* MAIN */}
+              <p className="text-gray-500">
+                🤖 AI Status
+              </p>
 
-<div className="
-grid
-lg:grid-cols-2
-gap-8
-">
 
+              <h2 className="
+              text-3xl
+              font-bold
+              text-green-600
+              mt-2
+              ">
 
+                Online
 
+              </h2>
 
 
-{/* FORM */}
+            </div>
 
-<div className="
-bg-white
-rounded-3xl
-shadow-xl
-p-8
-">
 
 
-<h2 className="
-text-2xl
-font-bold
-mb-6
-">
 
-📦 Product Details
+            <div className="
+            bg-white
+            rounded-3xl
+            shadow-xl
+            p-6
+            border
+            ">
 
-</h2>
 
+              <p className="text-gray-500">
+                ⚡ AI Model
+              </p>
 
 
-<Input
+              <h2 className="
+              text-3xl
+              font-bold
+              text-purple-600
+              mt-2
+              ">
 
-label="Product Name"
+                Groq AI
 
-value={productName}
+              </h2>
 
-onChange={(e)=>setProductName(e.target.value)}
 
-/>
+            </div>
 
 
+          </div>
 
-<Input
 
-label="Ingredients"
 
-value={ingredients}
 
-onChange={(e)=>setIngredients(e.target.value)}
 
-/>
 
 
+          {/* FORM */}
 
-<Input
 
-label="Weight"
+          <div className="
+          bg-white
+          rounded-3xl
+          shadow-2xl
+          p-8
+          border
+          ">
 
-value={weight}
 
-onChange={(e)=>setWeight(e.target.value)}
+            <h2 className="
+            text-3xl
+            font-bold
+            mb-6
+            ">
 
-/>
+              Create Product
 
+            </h2>
 
 
-<label className="font-semibold">
 
-Product Features
 
-</label>
+            <input
 
+              className="
+              w-full
+              border
+              rounded-xl
+              p-4
+              mb-4
+              "
 
-<textarea
+              placeholder="Search Product"
 
-rows="4"
+              value={search}
 
-value={features}
+              onChange={
+                (e)=>searchProducts(e.target.value)
+              }
 
-onChange={(e)=>setFeatures(e.target.value)}
+            />
 
-className="
-w-full
-border
-rounded-xl
-p-4
-mt-2
-focus:ring-2
-focus:ring-indigo-500
-"
 
-/>
 
 
 
+            <input
 
+              className="
+              w-full
+              border
+              rounded-xl
+              p-4
+              mb-4
+              "
 
-<label className="
-font-semibold
-block
-mt-5
-">
+              placeholder="Product Name"
 
-Writing Tone
+              value={productName}
 
-</label>
+              onChange={
+                (e)=>setProductName(e.target.value)
+              }
 
+            />
 
 
-<div className="
-flex
-gap-3
-flex-wrap
-mt-3
-">
 
 
-{
-["Premium","Traditional","Health-Focused"]
 
-.map(item=>(
+            <input
 
+              className="
+              w-full
+              border
+              rounded-xl
+              p-4
+              mb-4
+              "
 
-<button
+              placeholder="Ingredients"
 
-key={item}
+              value={ingredients}
 
-onClick={()=>setTone(item)}
+              onChange={
+                (e)=>setIngredients(e.target.value)
+              }
 
-className={
+            />
 
-`
-px-4
-py-2
-rounded-full
-transition
 
-${
 
-tone===item
 
-?
 
-"bg-indigo-600 text-white"
+            <input
 
-:
+              className="
+              w-full
+              border
+              rounded-xl
+              p-4
+              mb-4
+              "
 
-"bg-gray-100"
+              placeholder="Weight"
 
-}
+              value={weight}
 
-`
+              onChange={
+                (e)=>setWeight(e.target.value)
+              }
 
-}
+            />
 
->
 
-{item}
 
-</button>
 
 
-))
+            <textarea
 
-}
+              rows="4"
 
+              className="
+              w-full
+              border
+              rounded-xl
+              p-4
+              mb-4
+              "
 
+              placeholder="Product Features"
 
-</div>
+              value={features}
 
+              onChange={
+                (e)=>setFeatures(e.target.value)
+              }
 
+            />
 
 
 
 
-<div className="
-flex
-gap-3
-mt-7
-flex-wrap
-">
 
+            <select
 
-<Button onClick={handleGenerate}>
+              className="
+              w-full
+              border
+              rounded-xl
+              p-4
+              mb-6
+              "
 
-<span>
-✨
-</span>
+              value={tone}
 
-{editingId
-?
-"Update"
-:
-"Generate"
-}
+              onChange={
+                (e)=>setTone(e.target.value)
+              }
 
-</Button>
+            >
 
+              <option>
+                Premium
+              </option>
 
+              <option>
+                Traditional
+              </option>
 
-<Button
-variant="secondary"
-onClick={clearForm}
->
+              <option>
+                Health-Focused
+              </option>
 
-Clear
 
-</Button>
+            </select>
 
 
-</div>
 
 
 
-{
-loading &&
-<Loader/>
-}
+            <div className="
+            flex
+            gap-4
+            flex-wrap
+            ">
 
 
+              <button
 
-</div>
+                onClick={handleGenerate}
 
+                className="
+                bg-indigo-600
+                text-white
+                px-8
+                py-3
+                rounded-xl
+                font-semibold
+                hover:bg-indigo-700
+                "
 
+              >
 
+                {
+                  loading
+                  ?
+                  "Generating..."
+                  :
+                  editingId
+                  ?
+                  "Update Product"
+                  :
+                  "Generate AI Description"
+                }
 
 
-{/* RESULT */}
+              </button>
 
 
-<div className="
-bg-white
-rounded-3xl
-shadow-xl
-p-8
-">
 
 
-<h2 className="
-text-2xl
-font-bold
-mb-5
-">
+              <button
 
-✨ AI Generated Result
+                onClick={clearForm}
 
-</h2>
+                className="
+                bg-gray-200
+                px-8
+                py-3
+                rounded-xl
+                "
 
+              >
 
+                Clear
 
+              </button>
 
-{
-generatedDescription
 
-?
+            </div>
 
-<>
 
-<p className="
-leading-8
-text-gray-700
-">
 
-{generatedDescription}
 
-</p>
+            {
+              loading &&
 
+              <div className="mt-5">
 
+                <Loader />
 
-<div className="
-flex
-gap-3
-mt-8
-flex-wrap
-">
+              </div>
 
+            }
+                        {/* AI OUTPUT */}
 
-<button
+            {
+              generatedDescription &&
 
-onClick={copyText}
+              <div className="
+              mt-10
+              bg-gradient-to-br
+              from-indigo-50
+              to-purple-100
+              rounded-3xl
+              shadow-xl
+              p-8
+              border
+              ">
 
-className="
-bg-indigo-600
-text-white
-px-5
-py-2
-rounded-xl
-flex
-gap-2
-items-center
-"
 
->
+                <h2 className="
+                text-3xl
+                font-bold
+                text-indigo-700
+                mb-5
+                ">
 
-<span>
-📋
-</span>
+                  ✨ AI Generated Description
 
-Copy
+                </h2>
 
-</button>
 
 
+                <div className="
+                bg-white
+                rounded-2xl
+                p-6
+                shadow-inner
+                text-gray-700
+                leading-8
+                ">
 
-<button
+                  {generatedDescription}
 
-onClick={downloadPDF}
+                </div>
 
-className="
-bg-gray-100
-px-5
-py-2
-rounded-xl
-flex
-gap-2
-items-center
-"
 
->
 
-<span>
-📄
-</span>
 
-PDF
+                <div className="
+                flex
+                gap-4
+                flex-wrap
+                mt-6
+                ">
 
-</button>
 
+                  <button
 
+                    onClick={()=>{
 
-</div>
+                      navigator.clipboard.writeText(
+                        generatedDescription
+                      );
 
 
-</>
+                      setToastMessage(
+                        "Description copied!"
+                      );
 
 
-:
+                      setShowToast(true);
 
-<div className="
-text-center
-py-20
-text-gray-400
-">
+                    }}
 
+                    className="
+                    bg-indigo-600
+                    text-white
+                    px-6
+                    py-3
+                    rounded-xl
+                    font-semibold
+                    "
 
-<div className="text-5xl text-center">
-  ✨
-</div>
+                  >
 
-<p className="mt-4">
+                    📋 Copy
 
-Your AI description will appear here
+                  </button>
 
-</p>
 
 
-</div>
 
 
-}
+                  <button
 
+                    onClick={downloadPDF}
 
+                    className="
+                    bg-green-600
+                    text-white
+                    px-6
+                    py-3
+                    rounded-xl
+                    font-semibold
+                    "
 
-</div>
+                  >
 
+                    📄 Download PDF
 
+                  </button>
 
-</div>
 
 
+                </div>
 
 
+              </div>
 
-{/* SAVED */}
+            }
 
-<div className="
-mt-14
-">
 
 
-<h2 className="
-text-3xl
-font-bold
-mb-6
-">
+          </div>
 
-Saved Products
 
-</h2>
 
 
 
-{
 
-tasks.length===0
 
-?
+          {/* PRODUCT HISTORY */}
 
-<div className="
-bg-white
-p-8
-rounded-2xl
-text-center
-">
 
-No products yet
+          <div className="
+          mt-16
+          ">
 
-</div>
 
+            <h2 className="
+            text-4xl
+            font-bold
+            mb-8
+            text-gray-800
+            ">
 
-:
+              📦 Product History
 
-tasks
-.filter(task => task)
-.map(task=>(
+            </h2>
 
-<Card
 
-key={task._id}
 
-task={task}
 
-editTask={editTask}
+            {
+              tasks.length === 0 ?
 
-deleteTask={deleteTask}
 
-/>
+              (
 
-))
+                <div className="
+                bg-white
+                rounded-3xl
+                shadow-xl
+                p-12
+                text-center
+                border
+                ">
 
-}
 
+                  <div className="
+                  text-6xl
+                  mb-4
+                  ">
 
+                    📭
 
-</div>
+                  </div>
 
 
 
-</div>
+                  <h3 className="
+                  text-2xl
+                  font-bold
+                  text-gray-700
+                  ">
 
-</div>
+                    No Products Generated Yet
 
+                  </h3>
 
 
 
+                  <p className="
+                  text-gray-500
+                  mt-3
+                  ">
 
-<Toast
+                    Your AI generated products will appear here.
 
-show={showToast}
+                  </p>
 
-message="Success!"
 
-onClose={()=>setShowToast(false)}
 
-/>
+                </div>
 
+              )
 
 
-<Modal
+              :
 
-isOpen={isOpen}
 
-onClose={()=>setIsOpen(false)}
+              (
 
-title="How to Use"
+                <div className="
+                grid
+                md:grid-cols-2
+                gap-6
+                ">
 
->
 
-Fill details and click Generate.
+                  {
+                    tasks.map((task)=>(
 
-</Modal>
 
+                      <div
 
+                        key={task._id}
 
-<Footer/>
+                        className="
+                        bg-white
+                        rounded-3xl
+                        shadow-xl
+                        border
+                        p-6
+                        hover:-translate-y-2
+                        transition
+                        "
 
+                      >
 
-</>
 
-);
 
+                        <div className="
+                        flex
+                        justify-between
+                        items-start
+                        mb-4
+                        ">
+
+
+
+                          <div>
+
+
+                            <h3 className="
+                            text-2xl
+                            font-bold
+                            text-gray-800
+                            ">
+
+                              📦 {task.productName}
+
+                            </h3>
+
+
+
+                            <p className="
+                            text-indigo-600
+                            font-semibold
+                            mt-2
+                            ">
+
+                              Tone: {task.tone}
+
+                            </p>
+
+
+                          </div>
+
+
+
+
+
+                          <div className="
+                          flex
+                          gap-2
+                          ">
+
+
+                            <button
+
+                              onClick={()=>
+                                editTask(task)
+                              }
+
+                              className="
+                              bg-blue-100
+                              text-blue-600
+                              px-4
+                              py-2
+                              rounded-xl
+                              "
+
+                            >
+
+                              ✏️
+
+                            </button>
+
+
+
+
+                            <button
+
+                              onClick={()=>
+                                deleteTask(task._id)
+                              }
+
+                              className="
+                              bg-red-100
+                              text-red-600
+                              px-4
+                              py-2
+                              rounded-xl
+                              "
+
+                            >
+
+                              🗑️
+
+                            </button>
+
+
+
+                          </div>
+
+
+
+                        </div>
+
+
+
+
+
+
+                        <div className="
+                        bg-gray-50
+                        rounded-2xl
+                        p-5
+                        mb-4
+                        ">
+
+
+                          <p className="
+                          text-gray-700
+                          leading-7
+                          ">
+
+                            {task.description}
+
+                          </p>
+
+
+                        </div>
+
+
+
+
+
+
+                        <div className="
+                        grid
+                        grid-cols-2
+                        gap-3
+                        ">
+
+
+                          <div className="
+                          bg-indigo-50
+                          p-3
+                          rounded-xl
+                          ">
+
+                            <b>
+                              Ingredients
+                            </b>
+
+
+                            <p>
+                              {task.ingredients}
+                            </p>
+
+
+                          </div>
+
+
+
+
+                          <div className="
+                          bg-purple-50
+                          p-3
+                          rounded-xl
+                          ">
+
+
+                            <b>
+                              Weight
+                            </b>
+
+
+                            <p>
+                              {task.weight}
+                            </p>
+
+
+                          </div>
+
+
+                        </div>
+
+
+
+
+                      </div>
+
+
+                    ))
+
+                  }
+
+
+                </div>
+
+
+              )
+
+            }
+
+
+          </div>
+
+
+
+
+        </div>
+
+
+      </div>
+
+
+
+
+
+      <Toast
+
+        show={showToast}
+
+        message={toastMessage}
+
+        onClose={()=>
+          setShowToast(false)
+        }
+
+      />
+
+
+
+
+
+      <Modal
+
+        isOpen={isOpen}
+
+        onClose={()=>
+          setIsOpen(false)
+        }
+
+        title="How To Use"
+
+      >
+
+        <div className="space-y-3">
+
+          <p>
+            1. Enter product details.
+          </p>
+
+          <p>
+            2. Select tone.
+          </p>
+
+          <p>
+            3. Generate AI description.
+          </p>
+
+          <p>
+            4. Copy or download result.
+          </p>
+
+        </div>
+
+
+      </Modal>
+
+
+
+
+
+      <Footer />
+
+
+    </>
+
+  );
 
 }
 

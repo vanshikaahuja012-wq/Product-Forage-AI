@@ -1,14 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 
-
 function Navbar() {
-
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-
-
-  return (
+const token = localStorage.getItem("token");
+  
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  navigate("/login");
+};
+return (
 
     <nav className="
     sticky
@@ -88,41 +91,58 @@ function Navbar() {
 
 
           <ThemeToggle />
+          {token ? (
+  <button
+    onClick={handleLogout}
+    className="
+      px-5
+      py-2
+      rounded-xl
+      bg-red-500
+      text-white
+      hover:bg-red-600
+      transition
+    "
+  >
+    Logout
+  </button>
+) : (
+  <>
+    <Link
+      to="/login"
+      className="
+        px-5
+        py-2
+        rounded-xl
+        border
+        border-indigo-600
+        text-indigo-600
+        hover:bg-indigo-600
+        hover:text-white
+        transition
+      "
+    >
+      Login
+    </Link>
 
+    <Link
+      to="/register"
+      className="
+        px-5
+        py-2
+        rounded-xl
+        bg-indigo-600
+        text-white
+        hover:bg-indigo-700
+        transition
+      "
+    >
+      Register
+    </Link>
+  </>
+)}
 
-          <Link
-            to="/login"
-            className="
-            px-5
-            py-2
-            rounded-xl
-            border
-            border-indigo-600
-            text-indigo-600
-            hover:bg-indigo-600
-            hover:text-white
-            transition
-            "
-          >
-            Login
-          </Link>
-
-
-
-          <Link
-            to="/register"
-            className="
-            px-5
-            py-2
-            rounded-xl
-            bg-indigo-600
-            text-white
-            hover:bg-indigo-700
-            transition
-            "
-          >
-            Register
-          </Link>
+          
 
 
         </div>
@@ -194,15 +214,16 @@ function Navbar() {
             </Link>
 
 
-            <Link to="/login">
-              Login
-            </Link>
-
-
-            <Link to="/register">
-              Register
-            </Link>
-
+            {token ? (
+  <button onClick={handleLogout}>
+    Logout
+  </button>
+) : (
+  <>
+    <Link to="/login">Login</Link>
+    <Link to="/register">Register</Link>
+  </>
+)}
 
           </div>
 

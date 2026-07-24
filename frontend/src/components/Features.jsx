@@ -1,18 +1,11 @@
-import {
-Sparkles,
-Search,
-Zap,
-Copy
-} from "lucide-react";
-
-
+import { Search, Zap, Copy } from "lucide-react";
 function Features(){
 
 
 const features=[
 
 {
-icon:<Sparkles/>,
+icon:"✨",
 title:"AI Powered",
 text:"Generate descriptions using AI"
 },

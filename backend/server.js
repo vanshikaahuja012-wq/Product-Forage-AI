@@ -5,7 +5,7 @@ const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
 const rateLimit = require("express-rate-limit");
-
+const Groq = require("groq-sdk");
 const connectDB = require("./config/db");
 const verifyToken = require("./middleware/verifyToken");
 
@@ -13,10 +13,14 @@ const Task = require("./models/Task");
 const authRoutes = require("./routes/auth");
 
 require("./config/passport");
+console.log("JWT_SECRET =", process.env.JWT_SECRET);
+console.log("SESSION_SECRET =", process.env.SESSION_SECRET);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+const client = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 // ===========================
 // Database
 // ===========================
@@ -118,13 +122,53 @@ app.post("/api/generate-description", async (req, res) => {
       tone,
     } = req.body;
 
-    if (!productName) {
-      return res.status(400).json({
-        message: "Product name required",
-      });
-    }
 
-    const description = `Introducing ${productName}! Made with ${ingredients}, weighing ${weight}. Features: ${features}. Perfect for a ${tone.toLowerCase()} experience.`;
+    const prompt = `
+Create a professional e-commerce product description.
+
+Product Name:
+${productName}
+
+Ingredients:
+${ingredients}
+
+Weight:
+${weight}
+
+Features:
+${features}
+
+Tone:
+${tone}
+
+Requirements:
+- Write an attractive marketing description.
+- Highlight customer benefits.
+- Make it suitable for an online store.
+- Make it unique and engaging.
+- Do not mention AI.
+`;
+
+
+    const completion = await client.chat.completions.create({
+
+      model: "llama-3.1-8b-instant",
+
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+
+      temperature: 0.7,
+
+    });
+
+
+    const description =
+      completion.choices[0].message.content;
+
 
     const task = await Task.create({
       productName,
@@ -135,39 +179,22 @@ app.post("/api/generate-description", async (req, res) => {
       description,
     });
 
+
     res.status(201).json({
-      message: "Product created successfully",
+      message: "AI description generated successfully",
       task,
       description,
     });
-  } catch (err) {
+
+
+  } catch (error) {
+
+    console.log(error);
+
     res.status(500).json({
-      message: err.message,
+      message: "AI generation failed",
     });
-  }
-});
 
-// ===========================
-// Update Product
-// ===========================
-app.put("/api/tasks/:id", async (req, res) => {
-  try {
-    const task = await Task.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-
-    if (!task)
-      return res.status(404).json({
-        message: "Product not found",
-      });
-
-    res.json(task);
-  } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
   }
 });
 
