@@ -1,4 +1,4 @@
-# AI Product Description Generator
+# Product Forage AI
 
 ## Tech Stack
 - React.js

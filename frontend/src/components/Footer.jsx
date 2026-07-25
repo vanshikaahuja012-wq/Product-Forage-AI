@@ -6,7 +6,7 @@ function Footer() {
 
         <div>
           <h2 className="text-xl font-bold">
-            AI Product Generator
+             Product Forage AI
           </h2>
 
           <p className="text-gray-400 mt-2">

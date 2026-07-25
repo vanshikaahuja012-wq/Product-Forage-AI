@@ -109,28 +109,13 @@ app.post("/api/generate-description", async (req, res) => {
 // =====================================
 app.put("/api/tasks/:id", async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(
+    const updatedTask = await Task.findByIdAndUpdate(
       req.params.id,
-      {
-        productName: req.body.productName,
-        ingredients: req.body.ingredients,
-        weight: req.body.weight,
-        features: req.body.features,
-        tone: req.body.tone,
-        description: req.body.description,
-      },
-      {
-        new: true,
-      }
+      req.body,
+      { new: true }
     );
 
-    if (!task) {
-      return res.status(404).json({
-        message: "Product not found",
-      });
-    }
-
-    res.json(task);
+    res.json(updatedTask);
   } catch (err) {
     res.status(500).json({
       message: err.message,

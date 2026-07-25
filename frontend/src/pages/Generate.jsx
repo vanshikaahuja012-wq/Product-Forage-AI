@@ -463,7 +463,7 @@ function Generate() {
             bg-clip-text
             ">
 
-              🤖 AI Product Description Generator
+              🤖 Product Forage AI
 
             </h1>
 

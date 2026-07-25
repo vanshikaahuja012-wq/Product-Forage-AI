@@ -500,7 +500,7 @@ function Generate() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <h1 className="text-4xl font-bold text-center mb-8">
-          AI Product Description Generator
+          Product Forage AI
         </h1>
 
 

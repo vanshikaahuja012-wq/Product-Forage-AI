@@ -52,7 +52,7 @@ return (
             ✨
           </span>
 
-          AI Product Generator
+        Product Forage AI
 
         </Link>
 
