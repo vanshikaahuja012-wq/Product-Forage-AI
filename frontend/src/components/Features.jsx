@@ -1,4 +1,4 @@
-import { Search, Zap, Copy } from "lucide-react";
+
 function Features() {
   const features = [
     {
