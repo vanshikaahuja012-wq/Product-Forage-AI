@@ -16,6 +16,8 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("API URL:", process.env.REACT_APP_API_URL);
+console.log("Register URL:", `${process.env.REACT_APP_API_URL}/api/auth/register`);
 
    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
   method: "POST",

@@ -149,7 +149,7 @@ router.get(
 router.get(
   "/github/callback",
   passport.authenticate("github", {
-    failureRedirect: "http://localhost:3000/login",
+    failureRedirect:`${process.env.CLIENT_URL}/login` ,
     session: true,
   }),
   (req, res) => {
@@ -164,9 +164,8 @@ router.get(
       }
     );
 
-    res.redirect(
-      `http://localhost:3000/login?token=${token}`
-    );
+    res.redirect(`${process.env.CLIENT_URL}/login?token=${token}`);
+      
   }
 );
 
