@@ -17,13 +17,16 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      );
 
       const data = await res.json();
 
@@ -35,13 +38,13 @@ function Login() {
         alert(data.message || "Invalid Email or Password");
       }
     } catch (err) {
+      console.error(err);
       alert("Server Error");
-      console.log(err);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
       <form
         onSubmit={handleSubmit}
         className="bg-white dark:bg-gray-800 shadow-xl rounded-xl p-8 w-96"
@@ -86,22 +89,18 @@ function Login() {
             Register
           </a>
         </p>
-      </form>
-      <br /><br />
 
-<a href="http://localhost:5000/api/auth/github">
-  <button
-    style={{
-      padding: "10px 20px",
-      cursor: "pointer",
-    }}
-  >
-    Sign in with GitHub
-  </button>
-</a>
+        <div className="mt-6 text-center">
+          <a
+            href={`${process.env.REACT_APP_API_URL}/api/auth/github`}
+            className="inline-block bg-black hover:bg-gray-800 text-white px-5 py-3 rounded-lg font-semibold rounded-lg transition"
+          >
+            Sign in with GitHub
+          </a>
+        </div>
+      </form>
     </div>
   );
 }
-
 
 export default Login;

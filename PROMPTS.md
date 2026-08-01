@@ -1,7 +1,7 @@
 # Week 7 - AI Prompt Log
 
 ## Project
-AI Product Description Generator for E-Commerce Listings
+ Product Forage AI for E-Commerce Listings
 
 ---
 
