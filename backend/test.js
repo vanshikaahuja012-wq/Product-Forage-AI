@@ -1,19 +1,15 @@
-require("dotenv").config();
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const mongoose = require("mongoose");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const uri =
+  "mongodb+srv://vanshikaahuja012_db_user:YOUR_PASSWORD@cluster0.qt58vqu.mongodb.net/product-forage-ai?retryWrites=true&w=majority&appName=Cluster0";
 
-async function test() {
-  try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
-    });
-
-    const result = await model.generateContent("Say Hello");
-    console.log(result.response.text());
-  } catch (err) {
+mongoose
+  .connect(uri)
+  .then(() => {
+    console.log("✅ MongoDB Connected");
+    process.exit(0);
+  })
+  .catch((err) => {
     console.error(err);
-  }
-}
-
-test();
+    process.exit(1);
+  });

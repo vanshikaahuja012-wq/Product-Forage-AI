@@ -51,7 +51,7 @@ function Generate() {
     try{
 
       const res = await fetch(
-        "http://localhost:5000/api/tasks"
+        `${process.env.REACT_APP_API_URL}/api/tasks`
       );
 
 
@@ -96,7 +96,7 @@ function Generate() {
 
 
       const res = await fetch(
-        `http://localhost:5000/api/tasks/search/${value}`
+        `${process.env.REACT_APP_API_URL}/api/tasks/search/${value}`
       );
 
 
@@ -171,7 +171,7 @@ function Generate() {
 
 
         await fetch(
-          `http://localhost:5000/api/tasks/${editingId}`,
+          `${process.env.REACT_APP_API_URL}/api/tasks/${editingId}`,
           {
 
             method:"PUT",
@@ -207,7 +207,7 @@ function Generate() {
 
         const response = await fetch(
 
-          "http://localhost:5000/api/generate-description",
+          `${process.env.REACT_APP_API_URL}/api/generate-description`,
 
           {
 
@@ -338,7 +338,7 @@ function Generate() {
 
       await fetch(
 
-        `http://localhost:5000/api/tasks/${id}`,
+        `${process.env.REACT_APP_API_URL}/api/tasks/${id}`,
 
         {
 
