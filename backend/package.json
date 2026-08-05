@@ -25,13 +25,18 @@
     "express-validator": "^7.3.2",
     "groq-sdk": "^1.4.0",
     "jsonwebtoken": "^9.0.3",
-    "mongodb": "^6.21.0",
-    "mongoose": "^8.24.2",
+   "mongodb": "6.21.0",
+"mongoose": "8.24.2",
     "openai": "^6.48.0",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
+  },
+  "overrides": {
+  "mongoose": {
+    "mongodb": "6.21.0"
   }
+}
 }
