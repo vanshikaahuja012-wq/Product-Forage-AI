@@ -1,303 +1,155 @@
-# 🚀 Product Forage AI
+# Product-Forage-AI
 
-> **An AI-powered full-stack web application that generates professional, engaging, and marketing-ready product descriptions for e-commerce businesses using Large Language Models (LLMs).**
+AI-powered product description generator for e-commerce sellers.
 
----
+## Live Demo
 
-## 📖 Overview
+https://product-forage-w3ecanzie-vanshika22.vercel.app/
 
-Product Forage AI is a full-stack AI application built to simplify product content creation for e-commerce sellers. The application leverages AI to generate compelling product descriptions from basic product information such as product name, ingredients, weight, features, and preferred writing tone.
+## Screenshots
 
-It combines a modern React frontend, an Express.js backend, MongoDB for data storage, and Groq's Large Language Model (LLM) to deliver fast and accurate AI-generated content.
+### Home Page
 
----
+![Home Page](screenshots_home.png)
 
-## 🎯 Problem Statement
+### Login Page
 
-Writing high-quality product descriptions manually is time-consuming and requires strong marketing skills. Many online sellers struggle to create engaging descriptions that improve customer interest and sales.
+![Login Page](screenshots_login.png)
+![Register Page](screenshots_register.png)
+### AI Description Generator
 
-**Product Forage AI automates this process by generating professional product descriptions within seconds, helping businesses save time and maintain consistency across their product listings.**
+![AI Generator](screenshots_input.png)
 
----
+### Dashboard
 
-# ✨ Features
+![Dashboard](screenshots_output.png)
 
-- 🤖 AI-powered product description generation
-- 📝 Generate unique and marketing-friendly descriptions
-- 🎨 Multiple writing tones
-  - Premium
-  - Traditional
-  - Health-Focused
-- ⚡ Fast AI response generation
-- 💾 MongoDB database integration
-- 📱 Responsive user interface
-- 🔒 Secure API key management using environment variables
-- ❌ Error handling and loading states
-- 🔄 RESTful API architecture
 
----
+## Features
 
-# 🏗️ System Architecture
+- AI product description generation
+- Multiple writing tones
+- User authentication
+- Product CRUD operations
+- MongoDB data storage
+- Responsive React UI
+- Cloud deployment
 
-```text
-                    User
-                      │
-                      ▼
-          React + Tailwind CSS Frontend
-                      │
-                REST API (Express)
-                      │
-                      ▼
-              AI Processing Layer
-                      │
-                      ▼
-                 Groq LLM API
-                      │
-                      ▼
-               MongoDB Atlas
-```
 
----
+## Tech Stack
 
-# 🔄 Application Workflow
-
-1. User enters product information.
-2. React frontend validates the input.
-3. Product details are sent to the Express backend.
-4. Backend forwards the request to the Groq AI API.
-5. AI generates a professional product description.
-6. Generated content is returned to the frontend.
-7. Product information and generated description are stored in MongoDB.
-8. The generated description is displayed to the user.
-
----
-
-# 🛠️ Technology Stack
-
-## Frontend
+Frontend:
 - React.js
 - Tailwind CSS
-- JavaScript (ES6+)
-- React Router
 
-## Backend
+Backend:
 - Node.js
 - Express.js
-- REST API
 
-## Database
+Database:
 - MongoDB Atlas
-- Mongoose
 
-## Artificial Intelligence
+AI:
 - Groq API
-- Large Language Model (LLM)
 
-## Development Tools
-- Git & GitHub
-- Vite
-- Postman
-- VS Code
+Deployment:
+- Vercel
+- Render
 
----
 
-# 📂 Project Structure
+## Setup Instructions
 
-```text
-Product-Forage-AI/
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── assets/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   │
-│   └── package.json
-│
-├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── server.js
-│   ├── package.json
-│   └── .env
-│
-├── screenshots/
-│   ├── home.png
-│   ├── input.png
-│   ├── loading.png
-│   └── output.png
-│
-├── README.md
-└── .gitignore
-```
+### Clone Repository
 
----
+git clone <repo-url>
 
-# 📸 Screenshots
 
-## 🏠 Home Page
+### Frontend
 
-![Home Page](screenshots_home.jpeg)
-
----
-
-## ✍️ Product Input Form
-
-![Product Input Form](screenshots_input.png)
-
----
-
-## ⏳ AI Generation
-
-![Loading](screenshots_output.png)
-
----
-
-## 🤖 Generated Product Description
-
-![Generated Output](screenshots_output.png)
-
----
-
-# ⚙️ Installation
-
-## Clone the Repository
-
-```bash
-git clone https://github.com/your-username/Product-Forage-AI.git
-```
-
-Navigate to the project directory:
-
-```bash
-cd Product-Forage-AI
-```
-
----
-
-## Frontend Setup
-
-```bash
 cd frontend
+
 npm install
+
 npm run dev
-```
 
----
 
-## Backend Setup
+### Backend
 
-```bash
 cd backend
-npm install
-npm start
-```
 
----
+npm install
+
+npm start
+
 
 ## Environment Variables
 
-Create a `.env` file inside the backend directory.
+Frontend:
 
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-GROQ_API_KEY=your_groq_api_key
-```
+REACT_API_URL
 
----
 
-# 🔌 API Documentation
+Backend:
 
-## Generate Product Description
+MONGO_URI
 
-### Endpoint
+JWT_SECRET
 
-```http
-POST /api/ai/generate-description
-```
+GROQ_API_KEY
 
-### Sample Request
+CLIENT_URL
 
-```json
+
+## API Documentation
+
+### Generate Description
+
+POST
+
+/api/generate-description
+
+
+Request:
+
 {
-  "productName": "Organic Honey",
-  "ingredients": "Natural Honey",
-  "weight": "500g",
-  "features": "Pure and Healthy",
-  "tone": "Premium"
+"name":"Organic Cookies",
+"tone":"Premium"
 }
-```
 
-### Sample Response
 
-```json
+Response:
+
 {
-  "description": "Experience the richness of premium organic honey with its pure taste and natural goodness..."
+"description":"AI generated text"
 }
-```
 
----
 
-# 🧠 Challenges & Solutions
+## Folder Structure
 
-### AI Integration
+Product-Forage-AI
 
-**Challenge:** Integrating AI with the backend while ensuring secure API communication.
+├── frontend
 
-**Solution:** Used environment variables to securely manage API keys and implemented asynchronous API requests.
+├── backend
 
----
+│   ├── routes
 
-### Error Handling
+│   ├── models
 
-**Challenge:** Managing delays and unexpected API failures.
+│   └── server.js
 
-**Solution:** Added loading indicators, input validation, and graceful error handling for a smooth user experience.
 
----
+## Known Limitations
 
-### Database Integration
+- Free Render instances may sleep after inactivity.
+- AI generation depends on API availability.
+- Limited customization options.
 
-**Challenge:** Persisting generated descriptions efficiently.
 
-**Solution:** Connected MongoDB Atlas using Mongoose to store product details and generated content.
+## Credits
 
----
+Built during TBI-GEU Summer Internship Program 2026.
 
-# 👨‍💻 My Contributions
-
-- Designed and developed the responsive frontend using React and Tailwind CSS.
-- Built RESTful backend APIs with Node.js and Express.js.
-- Integrated Groq AI API for intelligent product description generation.
-- Connected MongoDB Atlas for persistent data storage.
-- Implemented loading states, validation, and error handling.
-- Managed version control using Git and GitHub.
-
----
-
-# 🎓 Skills Demonstrated
-
-- Full-Stack Web Development
-- Artificial Intelligence Integration
-- REST API Development
-- React.js Development
-- Node.js & Express.js
-- MongoDB Database Management
-- Prompt Engineering
-- API Integration
-- Responsive UI Design
-- Problem Solving
-
----
-
-# 👩‍💻 Developer
-
-**Vanshika Ahuja**
-
-- GitHub: https://github.com/vanshikaahuja012-wq
-
----
+AI assistance:
+- Groq API
+- ChatGPT
