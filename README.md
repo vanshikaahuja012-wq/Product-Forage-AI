@@ -24,7 +24,7 @@ https://product-forage-w3ecanzie-vanshika22.vercel.app/
 
 ### Input
 ![AI Generator](screenshots_input.png)
-### AI Description 
+### AI Generated Description 
 ![AI Generator](screenshots_ai.png)
 
 
