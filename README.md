@@ -15,7 +15,10 @@ https://product-forage-w3ecanzie-vanshika22.vercel.app/
 ### Login Page
 
 ![Login Page](screenshots_login.png)
+
+### Register Page
 ![Register Page](screenshots_register.png)
+
 ### AI Description Generator
 
 ![AI Generator](screenshots_input.png)
