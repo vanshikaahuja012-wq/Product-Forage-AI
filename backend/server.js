@@ -6,21 +6,39 @@ const Groq = require("groq-sdk");
 const connectDB = require("./config/db");
 const Task = require("./models/Task");
 const authRoutes = require("./routes/auth");
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect Database
+// =====================================
+// GROQ AI
+// =====================================
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+// =====================================
+// CONNECT DATABASE
+// =====================================
 connectDB();
 
-// Middleware
+// =====================================
+// MIDDLEWARE
+// =====================================
 app.use(cors());
 app.use(express.json());
+
+// =====================================
+// AUTH ROUTES
+// =====================================
 app.use("/api/auth", authRoutes);
-// Home
+
+// =====================================
+// HOME
+// =====================================
 app.get("/", (req, res) => {
   res.send("Backend is running!");
 });
-
 
 // =====================================
 // GET ALL PRODUCTS
@@ -31,12 +49,13 @@ app.get("/api/tasks", async (req, res) => {
 
     res.status(200).json(tasks);
   } catch (err) {
+    console.error("GET TASKS ERROR:", err);
+
     res.status(500).json({
       message: err.message,
     });
   }
 });
-
 
 // =====================================
 // GET SINGLE PRODUCT
@@ -51,17 +70,18 @@ app.get("/api/tasks/:id", async (req, res) => {
       });
     }
 
-    res.json(task);
+    res.status(200).json(task);
   } catch (err) {
+    console.error("GET SINGLE TASK ERROR:", err);
+
     res.status(500).json({
       message: err.message,
     });
   }
 });
 
-
 // =====================================
-// CREATE PRODUCT
+// AI GENERATE DESCRIPTION + SAVE
 // =====================================
 app.post("/api/generate-description", async (req, res) => {
   try {
@@ -73,14 +93,90 @@ app.post("/api/generate-description", async (req, res) => {
       tone,
     } = req.body;
 
+    // Validate product name
     if (!productName) {
-      return res.status(400).json({ message: "Product name required" });
+      return res.status(400).json({
+        message: "Product name is required",
+      });
     }
 
-    // 1. Generate AI-like description
-    const description = `Introducing ${productName}! Made with ${ingredients}, weighing ${weight}. Features: ${features}. Perfect for a ${tone.toLowerCase()} experience.`;
+    // =====================================
+    // CALL GROQ AI
+    // =====================================
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
 
-    // 2. SAVE TO DATABASE
+      messages: [
+        {
+          role: "system",
+          content: `
+You are an expert e-commerce product copywriter.
+
+Your job is to create attractive, natural and persuasive
+product descriptions for online stores.
+
+Rules:
+- Write only the final product description.
+- Do not mention AI.
+- Do not use headings.
+- Do not use markdown.
+- Do not invent ingredients.
+- Do not make unsupported medical or health claims.
+- Make the description sound professional and human.
+- Match the requested tone.
+- Highlight the product's actual features.
+          `,
+        },
+
+        {
+          role: "user",
+          content: `
+Create an e-commerce product description using the following details:
+
+Product Name: ${productName}
+
+Ingredients:
+${ingredients || "Not specified"}
+
+Weight:
+${weight || "Not specified"}
+
+Features:
+${features || "Not specified"}
+
+Tone:
+${tone || "Premium"}
+
+Requirements:
+- Write approximately 80-120 words.
+- Make it engaging and suitable for an online store.
+- Clearly highlight the important product features.
+- Match the selected tone.
+- Do not invent information.
+- Return only the description.
+          `,
+        },
+      ],
+
+      temperature: 0.7,
+      max_completion_tokens: 300,
+    });
+
+    // =====================================
+    // GET AI RESPONSE
+    // =====================================
+    const description =
+      completion.choices?.[0]?.message?.content?.trim();
+
+    if (!description) {
+      return res.status(500).json({
+        message: "AI failed to generate description",
+      });
+    }
+
+    // =====================================
+    // SAVE AI DESCRIPTION TO MONGODB
+    // =====================================
     const task = await Task.create({
       productName,
       ingredients,
@@ -90,19 +186,24 @@ app.post("/api/generate-description", async (req, res) => {
       description,
     });
 
-    // 3. RETURN RESPONSE
+    // =====================================
+    // SEND RESPONSE TO FRONTEND
+    // =====================================
     return res.status(201).json({
-      message: "Product created successfully",
+      message: "AI description generated successfully",
       task,
       description,
     });
 
   } catch (err) {
-    console.log("ERROR:", err);
-    res.status(500).json({ message: err.message });
+    console.error("GROQ ERROR:", err);
+
+    return res.status(500).json({
+      message: "Failed to generate AI description",
+      error: err.message,
+    });
   }
 });
-
 
 // =====================================
 // UPDATE PRODUCT
@@ -112,17 +213,26 @@ app.put("/api/tasks/:id", async (req, res) => {
     const updatedTask = await Task.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      {
+        new: true,
+      }
     );
 
-    res.json(updatedTask);
+    if (!updatedTask) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json(updatedTask);
   } catch (err) {
+    console.error("UPDATE TASK ERROR:", err);
+
     res.status(500).json({
       message: err.message,
     });
   }
 });
-
 
 // =====================================
 // DELETE PRODUCT
@@ -137,19 +247,20 @@ app.delete("/api/tasks/:id", async (req, res) => {
       });
     }
 
-    res.json({
+    res.status(200).json({
       message: "Product deleted successfully",
     });
   } catch (err) {
+    console.error("DELETE TASK ERROR:", err);
+
     res.status(500).json({
       message: err.message,
     });
   }
 });
 
-
 // =====================================
-// SEARCH PRODUCT
+// SEARCH PRODUCTS
 // =====================================
 app.get("/api/tasks/search/:keyword", async (req, res) => {
   try {
@@ -160,23 +271,18 @@ app.get("/api/tasks/search/:keyword", async (req, res) => {
       },
     });
 
-    res.json(tasks);
+    res.status(200).json(tasks);
   } catch (err) {
+    console.error("SEARCH ERROR:", err);
+
     res.status(500).json({
       message: err.message,
     });
   }
 });
 
-
 // =====================================
-// AI DESCRIPTION + SAVE TO DATABASE
-// =====================================
-
-
-
-// =====================================
-// SERVER
+// START SERVER
 // =====================================
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
