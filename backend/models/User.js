@@ -20,7 +20,22 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
 
+    // GitHub account ID
     githubId: {
+      type: String,
+      default: null,
+      sparse: true,
+    },
+
+    // Google account ID
+    googleId: {
+      type: String,
+      default: null,
+      sparse: true,
+    },
+
+    // Google profile picture
+    profilePicture: {
       type: String,
       default: null,
     },

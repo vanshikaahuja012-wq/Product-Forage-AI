@@ -1,12 +1,19 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const passport = require("passport");
 const { body, validationResult } = require("express-validator");
+const { OAuth2Client } = require("google-auth-library");
 
 const User = require("../models/User");
 
 const router = express.Router();
+
+// ======================================
+// GOOGLE CLIENT
+// ======================================
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID
+);
 
 // ======================================
 // REGISTER
@@ -14,8 +21,14 @@ const router = express.Router();
 router.post(
   "/register",
   [
-    body("name").notEmpty().withMessage("Name is required"),
-    body("email").isEmail().withMessage("Valid email required"),
+    body("name")
+      .notEmpty()
+      .withMessage("Name is required"),
+
+    body("email")
+      .isEmail()
+      .withMessage("Valid email required"),
+
     body("password")
       .isLength({ min: 6 })
       .withMessage("Password must be at least 6 characters"),
@@ -58,6 +71,8 @@ router.post(
         },
       });
     } catch (err) {
+      console.error("Register error:", err);
+
       res.status(500).json({
         message: err.message,
       });
@@ -71,7 +86,10 @@ router.post(
 router.post(
   "/login",
   [
-    body("email").isEmail().withMessage("Valid email required"),
+    body("email")
+      .isEmail()
+      .withMessage("Valid email required"),
+
     body("password")
       .notEmpty()
       .withMessage("Password is required"),
@@ -97,7 +115,18 @@ router.post(
         });
       }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      // Google-only/GitHub-only account
+      if (!user.password) {
+        return res.status(400).json({
+          message:
+            "This account uses Google or GitHub login. Please use the appropriate login option.",
+        });
+      }
+
+      const isMatch = await bcrypt.compare(
+        password,
+        user.password
+      );
 
       if (!isMatch) {
         return res.status(400).json({
@@ -126,6 +155,8 @@ router.post(
         },
       });
     } catch (err) {
+      console.error("Login error:", err);
+
       res.status(500).json({
         message: err.message,
       });
@@ -134,29 +165,84 @@ router.post(
 );
 
 // ======================================
-// GITHUB LOGIN
+// GOOGLE LOGIN / SIGN UP
 // ======================================
-router.get(
-  "/github",
-  passport.authenticate("github", {
-    scope: ["user:email"],
-  })
-);
+router.post("/google", async (req, res) => {
+  try {
+    const { credential } = req.body;
 
-// ======================================
-// GITHUB CALLBACK
-// ======================================
-router.get(
-  "/github/callback",
-  passport.authenticate("github", {
-    failureRedirect:`${process.env.CLIENT_URL}/login` ,
-    session: true,
-  }),
-  (req, res) => {
+    if (!credential) {
+      return res.status(400).json({
+        message: "Google credential is required",
+      });
+    }
+
+    // Verify Google's ID token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload) {
+      return res.status(401).json({
+        message: "Invalid Google token",
+      });
+    }
+
+    const {
+      sub: googleId,
+      email,
+      name,
+      picture,
+      email_verified,
+    } = payload;
+
+    // Make sure Google verified the email
+    if (!email || !email_verified) {
+      return res.status(401).json({
+        message: "Google email could not be verified",
+      });
+    }
+
+    // ======================================
+    // FIND USER
+    // ======================================
+    let user = await User.findOne({ email });
+
+    // ======================================
+    // CREATE USER IF NEW
+    // ======================================
+    if (!user) {
+      user = await User.create({
+        name: name || email.split("@")[0],
+        email,
+        googleId,
+        profilePicture: picture || null,
+        password: null,
+      });
+    } else {
+      // Existing account
+      // Link Google account if it isn't already linked
+      if (!user.googleId) {
+        user.googleId = googleId;
+      }
+
+      if (picture && !user.profilePicture) {
+        user.profilePicture = picture;
+      }
+
+      await user.save();
+    }
+
+    // ======================================
+    // CREATE YOUR JWT
+    // ======================================
     const token = jwt.sign(
       {
-        id: req.user._id,
-        email: req.user.email,
+        id: user._id,
+        email: user.email,
       },
       process.env.JWT_SECRET,
       {
@@ -164,9 +250,26 @@ router.get(
       }
     );
 
-    res.redirect(`${process.env.CLIENT_URL}/login?token=${token}`);
-      
+    // ======================================
+    // SEND RESPONSE
+    // ======================================
+    res.status(200).json({
+      message: "Google login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (err) {
+    console.error("Google authentication error:", err);
+
+    res.status(401).json({
+      message: "Google authentication failed",
+    });
   }
-);
+});
 
 module.exports = router;
