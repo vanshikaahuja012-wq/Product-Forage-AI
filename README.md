@@ -3,7 +3,7 @@
 AI-powered product description generator for e-commerce sellers.
 
 ## Live Demo
-product-forage-ai-mu.vercel.app
+https://product-forage-ai-mu.vercel.app/
 
 ## Screenshots
 
