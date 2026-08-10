@@ -76,7 +76,7 @@ Product Forage AI allows users to:
 
 ## 🔄 How It Works
 
-```text
+text
 User enters product details
           ↓
 Selects writing tone
