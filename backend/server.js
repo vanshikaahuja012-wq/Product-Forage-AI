@@ -5,7 +5,7 @@ const cors = require("cors");
 const Groq = require("groq-sdk");
 const connectDB = require("./config/db");
 const Task = require("./models/Task");
-const authRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/auth");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
