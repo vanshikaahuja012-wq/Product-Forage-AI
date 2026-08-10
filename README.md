@@ -445,4 +445,3 @@ Learning
 
 This project was developed for educational and internship purposes.
 
-This project was developed for educational and internship purposes.
