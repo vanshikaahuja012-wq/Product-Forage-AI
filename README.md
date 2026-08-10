@@ -92,31 +92,39 @@ AI generates description
 MongoDB Database
           ↓
 Copy / Download / Manage
+
 🛠️ Tech Stack
 Frontend
 React.js
 Tailwind CSS
 JavaScript
+
 Backend
 Node.js
 Express.js
 Passport.js
 JWT
+
 Database
 MongoDB Atlas
 Mongoose
+
 AI
 Groq API
 Llama 3.1
+
 Authentication
 Email/Password Authentication
 Google Identity Services
 JWT Authentication
+
 Deployment
 Vercel - Frontend
 Render - Backend
 MongoDB Atlas - Database
+
 🖥️ Application Pages
+
 🏠 Home Page
 
 Landing page introducing Product Forage AI and its main features.
@@ -127,6 +135,7 @@ Users can log in using:
 
 Email and password
 Google Sign-In
+
 📝 Register Page
 
 New users can create an account using their name, email, and password.
@@ -157,6 +166,7 @@ cookies offer a satisfying combination of taste and nutrition.
 
 Perfect for everyday snacking, these cookies provide a delicious
 and wholesome choice for customers.
+
 🔌 API Documentation
 Generate Product Description
 
@@ -176,6 +186,7 @@ Response
   "message": "AI description generated successfully",
   "description": "AI generated product description"
 }
+
 🔐 Authentication API
 Register
 POST /api/auth/register
@@ -183,6 +194,7 @@ Login
 POST /api/auth/login
 Google Authentication
 POST /api/auth/google
+
 🔵 Google Authentication
 
 Product Forage AI supports Google Sign-In and Sign-Up using Google Identity Services.
@@ -270,6 +282,7 @@ Product-Forage-AI/
 ├── PROMPTS.md
 ├── README.md
 └── .gitignore
+
 🚀 Installation & Setup
 1. Clone Repository
 git clone https://github.com/vanshikaahuja012-wq/Product-Forage-AI.git
@@ -277,6 +290,7 @@ git clone https://github.com/vanshikaahuja012-wq/Product-Forage-AI.git
 Navigate into the project:
 
 cd Product-Forage-AI
+
 💻 Frontend Setup
 
 Navigate to the frontend directory:
@@ -294,6 +308,7 @@ npm start
 The frontend will run at:
 
 http://localhost:3000
+
 ⚙️ Backend Setup
 
 Open another terminal.
@@ -313,6 +328,7 @@ npm start
 The backend will run at:
 
 http://localhost:5000
+
 🔑 Environment Variables
 
 Create environment files locally.
@@ -343,6 +359,7 @@ SESSION_SECRET=your_session_secret
 GROQ_API_KEY=your_groq_api_key
 CLIENT_URL=http://localhost:3000
 GOOGLE_CLIENT_ID=your_google_client_id
+
 ☁️ Deployment
 Frontend
 
@@ -362,12 +379,13 @@ Database
 The database is hosted using MongoDB Atlas.
 
 ⚠️ Known Limitations
-Free Render instances may sleep after periods of inactivity.
-AI generation depends on Groq API availability and usage limits.
-Google authentication requires correctly configured OAuth credentials.
-The current version has limited customization options.
-Internet connectivity is required for cloud-based features.
-AI-generated content should be reviewed before commercial publishing.
+1.Free Render instances may sleep after periods of inactivity.
+2.AI generation depends on Groq API availability and usage limits.
+3.Google authentication requires correctly configured OAuth credentials.
+4.The current version has limited customization options.
+5.Internet connectivity is required for cloud-based features.
+6.AI-generated content should be reviewed before commercial publishing.
+
 🔮 Future Improvements
 📊 Analytics dashboard
 🌍 Multi-language product descriptions
@@ -380,6 +398,7 @@ AI-generated content should be reviewed before commercial publishing.
 👥 Team collaboration
 📱 Progressive Web App support
 🧾 Improved PDF templates
+
 📈 Project Highlights
 Full-stack AI-powered web application
 REST API architecture
@@ -390,6 +409,7 @@ AI API integration
 Responsive frontend design
 Cloud deployment
 Production environment configuration
+
 🎓 Internship Project
 
 This project was developed as part of the:
@@ -404,12 +424,14 @@ Authentication
 Database management
 REST API development
 Cloud deployment
+
 🤖 AI Assistance
 
 AI technologies and development tools used in this project include:
 
 Groq API - AI-powered product description generation
 ChatGPT - Development assistance, debugging, documentation, and implementation guidance
+
 👩‍💻 Developer
 
 Vanshika Ahuja
@@ -417,6 +439,10 @@ Vanshika Ahuja
 B.Tech Computer Science Engineering
 Specialization: Artificial Intelligence & Machine Learning
 
+Learning
+
 📄 License
+
+This project was developed for educational and internship purposes.
 
 This project was developed for educational and internship purposes.
